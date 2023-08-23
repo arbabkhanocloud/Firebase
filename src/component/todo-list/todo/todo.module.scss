@@ -1,0 +1,30 @@
+.todo{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    background-color: rgb(167, 183, 246);
+    padding: 0.3rem;
+    margin-top: 10px;
+    width: 80%;
+    justify-content:space-between;
+    border-radius: 5px;
+
+}
+
+.list {
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .list:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+
+  .list-button{
+    display: flex;
+    padding: 0.8rem;
+    gap: 5px;
+  } 

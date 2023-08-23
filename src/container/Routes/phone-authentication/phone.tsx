@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import classes from "./phone.module.scss";
 
 const Phone = () => {
-  const [value, setValue] = useState();
-  const [OTP, setOTP] = useState();
+  const [value, setValue] = useState<string>("");
+  const [OTP, setOTP] = useState<string>();
   const [confirmObj, setConfirmObj] = useState<any>();
-  const [isSending, setIsSending] = useState(true);
+  const [isSending, setIsSending] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const handleSendCode = async (event: any) => {
+  const handleSendCode = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       const response = await setupRecaptcha(value);
@@ -24,11 +24,11 @@ const Phone = () => {
     }
   };
 
-  const onChangePhoneNumber = (event: any) => {
+  const onChangePhoneNumber = (event: string) => {
     setValue(event);
   };
 
-  const handleSubmitCode = async (event: any) => {
+  const handleSubmitCode = async (event: React.FormEvent) => {
     event.preventDefault();
     if (OTP === "" || OTP === null) return;
     try {
@@ -40,7 +40,7 @@ const Phone = () => {
     }
   };
 
-  const onOTPChange = (event: any) => {
+  const onOTPChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOTP(event.target.value);
   };
 
@@ -54,9 +54,7 @@ const Phone = () => {
             defaultCountry="PK"
             placeholder="Enter phone number"
             value={value}
-            onChange={(event) => {
-              onChangePhoneNumber(event);
-            }}
+            onChange={onChangePhoneNumber}
           />
           <div id="recaptcha-container" />
           <div className={classes["buttons-container2"]}>

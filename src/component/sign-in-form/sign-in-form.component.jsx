@@ -24,9 +24,8 @@ const defaultFormFields = {
 const SignInForm = () => {
   const [formFields, setFormFields] = useState({
     ...defaultFormFields,
-    phoneNumber: "",
   });
-  const { email, password, phoneNumber } = formFields;
+  const { email, password } = formFields;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -134,14 +133,6 @@ const SignInForm = () => {
           onChange={handleInputChange}
           name="password"
           value={password}
-        />
-        <FormInput
-          label="Phone Number"
-          type="tel"
-          required
-          onChange={handleInputChange}
-          name="phoneNumber"
-          value={phoneNumber}
         />
         <div className="buttons-container">
           <Button type="submit" buttonType="google">

@@ -11,7 +11,21 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  addDoc,
+  collection,
+  query,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+} from "firebase/firestore";
+
+import { TodoItem } from "../../component/todo-list/todo/todo";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDqBMdopVcqgf4qxPqnxtEFTuxj2lfHmtI",
@@ -70,7 +84,7 @@ export const createAuthUserWithEmailAndPassword = async (
 
 //FireStore Section
 
-export const db = getFirestore();
+export const db = getFirestore(firebaseApp);
 
 export const createUserDocumentFromAuth = async (
   userAuth: any,
@@ -78,10 +92,7 @@ export const createUserDocumentFromAuth = async (
 ) => {
   if (!userAuth) return;
   const userDocRef = doc(db, "user", userAuth.uid);
-  console.log("userDocRef", userDocRef);
   const userSnapshot = await getDoc(userDocRef);
-  console.log("userSnapshot", userSnapshot);
-  console.log(userSnapshot.exists());
 
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
@@ -111,3 +122,59 @@ export function setupRecaptcha(number: any) {
   recaptchaVerifier.render();
   return signInWithPhoneNumber(auth, number, recaptchaVerifier);
 }
+
+//create todo item doc in firestore
+export const createTodoDocument = async (todoSubject: string) => {
+  if (todoSubject === "") return;
+  const createdAt = new Date();
+  return await addDoc(collection(db, "todos"), {
+    todoSubject,
+    isCompleted: false,
+    createdAt,
+  });
+};
+
+//Retrieve all Todo Documment from firestore
+export const getAllTodoDocuments = (
+  callback: (todoDocuments: TodoItem[]) => void
+) => {
+  const todoCollectionRef = collection(db, "todos");
+
+  const unsubscribe = onSnapshot(todoCollectionRef, (querySnapshot) => {
+    const todoDocuments: TodoItem[] = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      todoSubject: doc.data().todoSubject,
+      isCompleted: doc.data().isCompleted,
+      createdAt: doc.data().createdAt,
+    }));
+
+    callback(todoDocuments);
+  });
+
+  return unsubscribe;
+};
+
+//Updata a todo document
+export const updatetodoDocument = async (
+  todoId: string,
+  updatedData: Partial<TodoItem>
+): Promise<void> => {
+  const todoRef = doc(db, "todos", todoId);
+  try {
+    await updateDoc(todoRef, updatedData);
+    console.log("Todo document updated successfully");
+  } catch (error) {
+    console.error("Error updating todo document:", error);
+  }
+};
+
+//delete a todo document from the firestore
+export const deleteTodoDocumnet = async (id: string): Promise<void> => {
+  const docRef = doc(db, "todos", id);
+  try {
+    await deleteDoc(docRef);
+    console.log("successfully deleted the Todo document");
+  } catch (error) {
+    console.log("error deleting the Todo document", error);
+  }
+};

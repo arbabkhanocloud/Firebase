@@ -1,17 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import TodoList from "../../../component/todo-list/todo-list";
 
 function Home() {
-  const navigate = useNavigate();
-  const handler = () => {
-    navigate("auth");
-  };
-  return (
-    <div>
-      Home Page
-      <button onClick={handler}>go to auth </button>
-    </div>
-  );
+  return <TodoList />;
 }
 
 export default Home;
